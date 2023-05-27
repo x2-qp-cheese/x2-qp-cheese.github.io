@@ -1,4 +1,4 @@
-name: x2qpcheese
+name: generate greetings
 
 on:
   push:
@@ -6,6 +6,19 @@ on:
 
 jobs:
   my_job:
-    name: deploy to staging
-    runs-on: ubuntu-lates
+    name: Generate Greetings
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create greetings file
+        run: |
+          echo "import sys" >> greetings.py
+          echo "print('Hello, ${{ github.actor }}!')" >> greetings.py
+          echo "print('Thank you for pushing to the repository.')" >> greetings.py
+      
+      - name: Show greetings
+        run: python greetings.py
     
