@@ -2,8 +2,6 @@ name: Build File
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -16,24 +14,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  python:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }} 
     runs-on: ubuntu-latest
     steps:
-      - name: Check the repository
+      - name: Checkout code
         uses: actions/checkout@v2
-      - name: Checkout
-        uses: actions/checkout@v3
         
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: '.'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+      - name: Create greetings file
+        run: |
+          echo "import sys" >> greetings.py
+          echo "print('Hello, ${{ github.actor }}!')" >> greetings.py
+          echo "print('Thank you for pushing to the repository.')" >> greetings.py
+      
+      - name: Show greetings file content
+        run: cat greetings.py
