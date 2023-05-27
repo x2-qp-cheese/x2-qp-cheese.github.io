@@ -19,6 +19,5 @@ jobs:
           echo "print('Hello, ${{ github.actor }}!')" >> greetings.py
           echo "print('Thank you for pushing to the repository.')" >> greetings.py
       
-      - name: Show greetings
-        run: python greetings.py
-    
+      - name: Show greetings file content
+        run: cat greetings.py
