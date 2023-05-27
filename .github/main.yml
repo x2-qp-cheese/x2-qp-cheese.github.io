@@ -1,23 +1,39 @@
-name: generate greetings
-
+name: Build File
 on:
   push:
-    branches: [main]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  my_job:
-    name: Generate Greetings
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }} 
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Check the repository
         uses: actions/checkout@v2
-
-      - name: Create greetings file
-        run: |
-          echo "import sys" >> greetings.py
-          echo "print('Hello, ${{ github.actor }}!')" >> greetings.py
-          echo "print('Thank you for pushing to the repository.')" >> greetings.py
-      
-      - name: Show greetings file content
-        run: cat greetings.py
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
